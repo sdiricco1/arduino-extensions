@@ -3,10 +3,19 @@ const path = require("path");
 const isDev = require("electron-is-dev");
 const { exec, execFile  } = require("child_process");
 const { stdout } = require("process");
+const usbDetect = require('usb-detection');
 
+let mainWindow;
+ 
 const arduino_cli_win = 'cd core/win & arduino-cli.exe';
 const arduino_cli_linux = '';
 const arduino_cli = process.platform === 'win32' ? arduino_cli_win : arduino_cli_linux ;
+
+usbDetect.startMonitoring();
+
+usbDetect.on('change', async(device) => { 
+  mainWindow.webContents.send("usb-detect:onchange", true);
+});
 
 const exexProm = async (exec, cmd) => {
   const result = {
@@ -26,7 +35,7 @@ const exexProm = async (exec, cmd) => {
   })
 }
 
-let mainWindow;
+
 
 const showMessageBox=(options) => {
   //dialog box
@@ -56,7 +65,7 @@ ipcMain.handle("arduino-cli-board-list", async(event) => {
     err: undefined
   }
   try {
-    r = await exexProm(exec , `${arduino_cli} board list --format json`);
+    const r = await exexProm(exec , `${arduino_cli} board list --format json`);
     result.stdout = JSON.parse(r.stdout);
     return result;
   } catch (err) {

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Select } from "antd";
-import './App.less';
+import "./App.less";
 
 const { Option } = Select;
 
@@ -12,36 +12,65 @@ class App extends React.Component {
     this.props = props;
     this.state = {
       boardList: [],
-      boardSelected: undefined
+      boardSelected: undefined,
+    };
+    this.onChangeSelectedBoard = this.onChangeSelectedBoard.bind(this);
+    this.usbDetectOnChange = this.usbDetectOnChange.bind(this);
+  }
+
+  async onChangeSelectedBoard(value) {
+    const boardSelected = this.state.boardList.find(
+      (el) => el.port.address === value
+    );
+    this.setState({ boardSelected: boardSelected });
+  }
+
+  async usbDetectOnChange() {
+    const boardList = (await ipcRenderer.invoke("arduino-cli-board-list")).stdout;
+    let boardSelected = this.state.boardSelected;
+    if (boardSelected !== undefined) {
+      const el = boardList.find(el => el.port.address === boardSelected.port.address);
+      if (el === undefined) {
+        boardSelected = undefined;
+      }
     }
-    this.onChangeSelectedBoard = this.onChangeSelectedBoard.bind(this)
+    this.setState({ boardList: boardList, boardSelected: boardSelected });
   }
 
-  async onChangeSelectedBoard(value){
-    const boardSelected = this.state.boardList.find(el => el.port.address === value)
-    this.setState({boardSelected: boardSelected})   
-  }
-
-  async componentDidMount(){
+  async componentDidMount() {
+    ipcRenderer.on("usb-detect:onchange", this.usbDetectOnChange);
     const res = await ipcRenderer.invoke("arduino-cli-board-list");
-    this.setState({boardList:res.stdout})
+    this.setState({ boardList: res.stdout });
   }
 
   render() {
-    const renderBoardList = this.state.boardList.map(el =>{
-      console.log(el)
-      if(el.matching_boards){
-        return (<Option key={el.port.address} value={el.port.address}>{el.matching_boards[0].name} ({el.port.address})</Option>)
+    const renderBoardList = this.state.boardList.map((el) => {
+      if (el.matching_boards) {
+        return (
+          <Option key={el.port.address} value={el.port.address}>
+            {el.matching_boards[0].name} ({el.port.address})
+          </Option>
+        );
+      } else {
+        return (
+          <Option key={el.port.address} value={el.port.address}>
+            Other ({el.port.address})
+          </Option>
+        );
       }
-      else{
-        return (<Option key={el.port.address} value={el.port.address}>Other ({el.port.address})</Option>)
-      }
-    })
+    });
     return (
       <div className="mainContainer">
-        <Select className="selectContainer" onChange={this.onChangeSelectedBoard} onClick={this.onClick}>
+        <Select
+          value={this.state.boardSelected ? this.state.boardSelected.port.address: "---"}
+          className="selectContainer"
+          onChange={this.onChangeSelectedBoard}
+        >
           {renderBoardList}
         </Select>
+        <div className="viewer">
+          <code className="logTerminal">code is here..</code>
+        </div>
       </div>
     );
   }

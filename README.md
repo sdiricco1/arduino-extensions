@@ -7,11 +7,13 @@
 
 |nr|feature|stato|
 |---|---|---|
-||arduino extension dovrà essere in grado di visulizzare le board collegate|not implemented|
+||arduino extension dovrà essere in grado di visulizzare le board collegate|implemented|
 ||arduino extension dovrà essere in grado di connettere una delle board collegate|not implemented|
 ||arduino extension dovrà essere in grado di flashare il bootload attraverso un programmatore esterno|not implemented|
 ||arduino extension dovrà essere in grado di selezionare uno sketch come path|not implemented|
 ||arduino extension dovrà essere in grado di compilare uno sketch|not implemented|
+||arduino extension dovrà essere in grado di esegiuire l'upload di uno sketch|not implemented|
+||arduino extension dovrà essere in grado di caricare hex file attraverso un programmatore esterno|not implemented|
 ||arduino extension dovrà essere in grado di eseguire ogni comando CLI in modalità manuale con apposita interfaccia|not implemented|
 
 `
