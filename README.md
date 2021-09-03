@@ -13,3 +13,5 @@
 ||arduino extension dovrà essere in grado di selezionare uno sketch come path|not implemented|
 ||arduino extension dovrà essere in grado di compilare uno sketch|not implemented|
 ||arduino extension dovrà essere in grado di eseguire ogni comando CLI in modalità manuale con apposita interfaccia|not implemented|
+
+`

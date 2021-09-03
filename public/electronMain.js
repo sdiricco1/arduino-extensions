@@ -1,9 +1,30 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
-const arduino_cli_win = "../core/win/arduino-cli.exe"
-const { exec } = require("child_process");
+const { exec, execFile  } = require("child_process");
+const { stdout } = require("process");
 
+const arduino_cli_win = 'cd core/win & arduino-cli.exe';
+const arduino_cli_linux = '';
+const arduino_cli = process.platform === 'win32' ? arduino_cli_win : arduino_cli_linux ;
+
+const exexProm = async (exec, cmd) => {
+  const result = {
+    stdout: undefined,
+    stderr: undefined,
+  }
+  return new Promise( (resolve, reject) => {
+  exec(cmd, (err, stdout, stderr) => {
+      if(err){
+        reject(err)
+      }
+      resolve({
+        stdout: stdout,
+        stderr: stderr
+      })
+    })
+  })
+}
 
 let mainWindow;
 
@@ -27,6 +48,27 @@ const showMessageBox=(options) => {
 ipcMain.handle("message-box", async (event, options) => {
     showMessageBox(options)
 });
+
+ipcMain.handle("arduino-cli-board-list", async(event) => {
+  const result = {
+    stdout: undefined,
+    stderr: undefined,
+    err: undefined
+  }
+  try {
+    r = await exexProm(exec , `${arduino_cli} board list --format json`);
+    result.stdout = JSON.parse(r.stdout);
+    return result;
+  } catch (err) {
+    result.err = err.message;
+    showMessageBox({
+      title: "Error",
+      message: err.message,
+      type: 'error'
+    })
+  }
+  return (result)
+})
 
 function createWindow() {
   mainWindow = new BrowserWindow({
