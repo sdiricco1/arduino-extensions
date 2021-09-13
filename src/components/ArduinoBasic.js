@@ -1,11 +1,8 @@
 import React from "react";
-import { Select, Typography, Space, Form, Input, Button, Divider } from "antd";
+import { Select, Space, Form, Input, Button, Divider } from "antd";
 import { FolderOutlined, UploadOutlined, BuildOutlined } from '@ant-design/icons';
 
-import "./ArduinoBasic.less";
-
 const { Option } = Select;
-const { Text, Link } = Typography;
 
 const { ipcRenderer } = window.require("electron");
 

@@ -1,0 +1,19 @@
+.logTerminal{
+
+    overflow: auto;
+}
+
+.container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.header{
+    padding: 2px 4px 2px 4px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #444444;
+}

@@ -1,7 +1,11 @@
 import React from "react";
-import { Button, Select, Tabs } from "antd";
+import { Tabs } from "antd";
 import { AlertOutlined, ExperimentOutlined } from '@ant-design/icons';
 import ArduinoBasic from './components/ArduinoBasic';
+import LogTerminal from "./components/LogTerminal";
+import ResizePanel from "react-resize-panel";
+
+
 
 import "./App.less";
 
@@ -10,7 +14,16 @@ const { TabPane } = Tabs;
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      msg: 'Arduino Cli',
+    }
     this.props = props;
+
+  }
+
+
+
+  componentDidMount() {
 
   }
 
@@ -27,10 +40,16 @@ class App extends React.Component {
             </TabPane>
           </Tabs>
         </div>
+          <ResizePanel
+          style={{ height: "200px" }}
+            direction="n"
+            handleClass="customHandle"
+            borderClass="customResizeBorder"
+          >
+            <div className="downContainer"><LogTerminal msg="Arduino CLI" /></div>
+            
+          </ResizePanel>
 
-        <div className="viewer">
-          <code className="logTerminal">code is here..</code>
-        </div>
       </div>
     );
   }
